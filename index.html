@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class of '84</title>
+<style>
+  :root{
+    --navy:#081733;
+    --navy2:#0d2450;
+    --navy3:#132f66;
+    --yellow:#ffd84d;
+    --yellow2:#ffef9a;
+    --sky:#8fd3ff;
+    --pink:#ff5ccf;
+    --pink2:#ff91dd;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:"Courier New", monospace;
+    color:var(--yellow2);
+    background:
+      radial-gradient(circle at 50% -10%, rgba(255,216,77,.20), transparent 26%),
+      radial-gradient(circle at 15% 20%, rgba(255,92,207,.12), transparent 28%),
+      radial-gradient(circle at 85% 20%, rgba(143,211,255,.10), transparent 24%),
+      linear-gradient(180deg, #020611 0%, #081733 45%, #020611 100%);
+    padding:18px;
+    line-height:1.65;
+    text-shadow:0 0 6px rgba(255,216,77,.12);
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.04) 0px,
+      rgba(255,255,255,.04) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+    pointer-events:none;
+    mix-blend-mode:screen;
+    opacity:.55;
+  }
+  .stars{
+    position:fixed; inset:0; pointer-events:none; opacity:.5;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,.7) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 70% 14%, rgba(255,255,255,.55) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 85% 32%, rgba(255,255,255,.6) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 40% 9%, rgba(255,255,255,.5) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 25% 60%, rgba(255,255,255,.35) 0 1px, transparent 1.5px),
+      radial-gradient(circle at 80% 74%, rgba(255,255,255,.35) 0 1px, transparent 1.5px);
+  }
+  .sun-grid{
+    position:fixed;
+    left:50%; transform:translateX(-50%);
+    top:72px;
+    width:min(720px, 94vw);
+    height:220px;
+    pointer-events:none;
+    opacity:.28;
+    z-index:0;
+  }
+  .sun{
+    width:180px; height:180px; margin:0 auto;
+    border-radius:50%;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,216,77,.95) 0px,
+        rgba(255,216,77,.95) 12px,
+        rgba(255,92,207,.95) 12px,
+        rgba(255,92,207,.95) 16px
+      );
+    box-shadow:0 0 40px rgba(255,92,207,.35), 0 0 80px rgba(255,216,77,.25);
+  }
+  .grid{
+    position:absolute; left:0; right:0; bottom:-10px; height:120px;
+    background:
+      linear-gradient(to top, rgba(255,92,207,.35), transparent 70%),
+      repeating-linear-gradient(to right, rgba(143,211,255,.32) 0 2px, transparent 2px 48px),
+      repeating-linear-gradient(to top, rgba(143,211,255,.32) 0 2px, transparent 2px 24px);
+    clip-path:polygon(0 100%,100% 100%,70% 0,30% 0);
+    opacity:.75;
+  }
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:1200px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:18px;
+  }
+  .panel{
+    background:linear-gradient(180deg, rgba(13,36,80,.96), rgba(6,20,47,.96));
+    border:3px solid var(--yellow);
+    border-radius:14px;
+    padding:20px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.03) inset,
+      0 0 18px rgba(255,216,77,.35),
+      inset 0 0 22px rgba(143,211,255,.08);
+    position:relative;
+  }
+  .panel::after{
+    content:"";
+    position:absolute; inset:8px;
+    border:1px solid rgba(143,211,255,.18);
+    border-radius:8px;
+    pointer-events:none;
+  }
+  .title{
+    margin:0 0 6px 0;
+    color:var(--yellow);
+    font-size:3rem;
+    letter-spacing:5px;
+    text-shadow:0 0 8px rgba(255,216,77,.8), 0 0 20px rgba(255,216,77,.45), 0 0 34px rgba(255,92,207,.15);
+  }
+  .subtitle{
+    color:var(--sky);
+    margin:0 0 18px 0;
+    letter-spacing:3px;
+    font-size:.98rem;
+    text-transform:uppercase;
+  }
+  .story{
+    min-height:360px;
+    white-space:pre-line;
+    font-size:1.02rem;
+  }
+  .choice, .btn{
+    display:block;
+    width:100%;
+    margin-top:10px;
+    padding:13px 14px;
+    background:linear-gradient(180deg, #1b3d83 0%, #142d63 100%);
+    color:var(--yellow);
+    border:2px solid var(--yellow);
+    border-radius:10px;
+    text-decoration:none;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    box-shadow:0 0 10px rgba(255,216,77,.18), inset 0 0 10px rgba(255,255,255,.03);
+  }
+  .choice:hover, .btn:hover{
+    background:linear-gradient(180deg, #2854a8 0%, #1b3d83 100%);
+    color:white;
+  }
+  h2{
+    margin:0 0 10px 0;
+    color:var(--sky);
+    letter-spacing:2px;
+    text-transform:uppercase;
+  }
+  .marquee{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,216,77,.35);
+    color:var(--sky);
+    font-size:.94rem;
+    line-height:1.55;
+  }
+  .start-screen{text-align:center}
+  .insert{
+    color:var(--pink2);
+    font-size:1.08rem;
+    letter-spacing:4px;
+    margin:14px 0 0 0;
+    animation: blink 1s steps(2, start) infinite;
+    text-transform:uppercase;
+  }
+  .pixel-box{
+    border:2px dashed rgba(255,216,77,.55);
+    padding:14px;
+    margin:14px 0;
+    background:rgba(3,8,22,.26);
+  }
+  .hud{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+  }
+  .hud div{
+    border:1px solid rgba(255,216,77,.28);
+    padding:8px 10px;
+    border-radius:8px;
+    background:rgba(255,255,255,.02);
+  }
+  .footer-note{
+    margin-top:14px;
+    color:var(--pink2);
+    font-size:.88rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  @media (max-width: 900px){
+    .wrap{grid-template-columns:1fr}
+    .title{font-size:2.2rem}
+    .sun-grid{top:54px;height:180px}
+    .sun{width:130px;height:130px}
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="sun-grid"><div class="sun"></div><div class="grid"></div></div>
+
+<div class="wrap">
+  <div class="panel start-screen" id="top">
+    <h1 class="title">CLASS OF '84</h1>
+    <div class="subtitle">Menlo Knights / Atherton / Quest Mode</div>
+    <div class="pixel-box">
+      <div class="story" style="min-height:auto">SPRING 1984.
+
+YOU ARE NOT THE OFFICIAL KINGS OF MENLO.
+DREW FERRANDO AND ERIK REVENO CAN HAVE THAT CASTLE.
+
+YOU AND YOUR PEOPLE OPERATE IN THE FAR MORE INTERESTING TERRITORY JUST BELOW IT:
+THE B TEAM OF COOL.
+
+WHICH IS TO SAY:
+THE GROUP MOST LIKELY TO END UP WITH THE BETTER STORIES.
+
+MAIN QUEST:
+GET A KEG.
+
+SUBQUESTS:
+AVOID LETTING BILL WALK UP TO A GIRL AND ASK IF SHE WANTS TO NECK, AS THOUGH HISTORY HAS NOT ALREADY RULED ON THIS.
+PRETEND AMOS IS NOT ALREADY GROUNDED.
+STOP P-ROY FROM TURNING HOUSEHOLD OBJECTS INTO TACTICAL SYSTEMS.
+STAY OUT OF HALVORSEN'S BRONZED MERCEDES ORBIT.
+ASSUME AMOS IS EITHER ALREADY GROUNDED OR ABOUT TO BE.</div>
+    </div>
+    <div class="insert">Insert Coin / Press Start</div>
+    <a class="choice" href="#start">START GAME</a>
+    <div class="footer-note">HIGH SCORE: SURVIVE YOUR OWN BAD IDEAS</div>
+  </div>
+
+  <div class="panel">
+    <h2>Player Status</h2>
+    <div class="hud">
+      <div>HEAT: MODERATE</div>
+      <div>CRED: FRAGILE</div>
+      <div>TIME: SLIPPING</div>
+      <div>PARTY IQ: INCONSISTENT</div>
+      <div>AMOS STATUS: PROBABLY GROUNDED</div>
+      <div>AMOS STATUS: SOMEHOW STILL WITH US</div>
+    </div>
+    <div class="marquee">
+      SCHOOL COLORS: YELLOW + NAVY.<br>
+BILL'S PRIMARY ROMANTIC MOVE REMAINS HISTORICALLY UNSUCCESSFUL.<br>
+      DEMETE'S DOMINATES DEFENDER.<br>
+      HALVORSEN DRIVES A FANCY MERCEDES AND WEARS BRONZER.<br>
+      PAUL IMPROVES MORALE BY JUST BEING PAUL.<br>
+      P-ROY CAN TURN A TOOTHBRUSH INTO A PROBLEM.<br>
+      AMOS STATUS: PROBABLY GROUNDED.<br>
+      RUBO IS MOSTLY ABOUT WHIFFLE BALL FOR NOW, BUT THE TROUBLE SUBTEXT IS THERE.
+    </div>
+  </div>
+</div>
+
+<div id="start" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Level 1: The Question</h2>
+    <div class="story">The night begins the way your nights often begin: not with a decision, but with drift.
+
+Bill, statistically speaking, is only a few scenes away from walking up to a girl and asking if she wants to neck. The answer, historically, has been just what one would expect.
+
+One car is playing the English Beat. Another is leaking Oingo Boingo through a cracked window. The social hierarchy of Menlo is out there doing whatever the official cool kids do, while your crew hovers in the much more useful zone just beneath it, where stories are better and plans are worse.
+
+Then someone asks the fatal question.
+
+Do we have a keg?
+
+You do not.
+
+And just like that, the whole night rearranges itself into a campaign.
+
+Where do you begin?</div>
+    <a class="choice" href="#paul-house">GO TO PAUL'S HOUSE</a>
+    <a class="choice" href="#arcade">GO FIND DEMETE'S AT THE ARCADE</a>
+    <a class="choice" href="#mopeds">TAKE THE MOPEDS INTO THE NIGHT</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="paul-house" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Paul's House</h2>
+    <div class="story">Paul's house has the feeling of infrastructure.
+
+Amos is here too, which is surprising given the strong possibility that he is already grounded and simply has not been formally notified yet.
+
+His parents are out of town again, which for your crowd now qualifies as a municipal resource. Paul himself is here doing what Paul does best: being lovable, slightly strange, and deeply stabilizing without appearing to do anything obvious.
+
+Doug leans against the counter and says what everybody is thinking:
+
+Bill, to his credit, is currently staying focused, which everybody understands to be a temporary condition.
+"We need a system."
+
+That is how Plaster Card begins to form. Not a club exactly. More like a vow made by smart dorks with bad logistics.
+
+Meanwhile, P-Roy is in the corner trying to transform a toothbrush into what he insists may become a bow and arrow. Or a leverage device. Or both.
+
+Amos checks the front window the way other people check the weather, which makes sense because in his life grounding functions exactly like weather.
+
+Outside, a Mercedes glides by slowly.
+
+No one sees the driver clearly, but everyone agrees the car contains bronzer.</div>
+    <a class="choice" href="#plan">FORM A REAL PLAN</a>
+    <a class="choice" href="#linger">HANG OUT TOO LONG</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="arcade" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>The Arcade</h2>
+    <div class="story">The arcade is a minor kingdom and Demete's is currently its wizard king.
+
+Amos is also present, at least temporarily, like a man playing with house money against his own parents.
+
+He is locked into Defender with the kind of focus other people reserve for surgery or revenge. He does not look up when you approach.
+
+"Jack in the Box liquor store," he says. "Classic move. Don't be idiots."
+
+This is outstanding advice for a group that treats not being idiots as more of a creative aspiration than a reliable setting.
+
+It is especially useful advice for Bill, whose romantic strategy still consists largely of walking up to a girl and asking if she wants to neck as though subtlety were un-American.
+
+At the edge of the scene is Rubo.
+
+Bill notices a girl near the prize counter and seems, for one dangerous second, prepared to ask his usual doomed question. Demete's saves the mission by not letting him drift more than six feet in that direction.
+
+In 1984 his attention still belongs mostly to whiffle ball, angles, and the clean internal logic of his own amusements. But there is already a future spark in him, a tiny preview that one day he may discover the joy of instigating trouble simply to see what shakes loose.
+
+Today, though, he is mostly just watching.
+
+Which is somehow almost more suspicious.</div>
+    <a class="choice" href="#liquor">TAKE THE INTEL AND GO</a>
+    <a class="choice" href="#linger-arcade">LINGER TOO LONG</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="mopeds" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Moped Mode</h2>
+    <div class="story">The mopeds fire up and instantly make the whole evening feel more cinematic than it probably deserves.
+
+It is unclear whether Amos is technically allowed to be on a moped right now, which in no way prevents him from being on one.
+
+Bill and Howie together can turn even a simple errand into a side quest. Atherton opens up around you in warm strips of pavement and possibility. For a few minutes, it becomes extremely easy to believe that motion itself counts as strategy.
+
+It does not.
+
+This is one of the great recurring lies of your youth.
+
+Another recurring lie is Bill's belief that, this time, a girl may react favorably when asked if she wants to make out.
+
+Somebody floats a party rumor with exactly the kind of confidence bad information always has.
+
+Bill straightens his shirt at the sight of a girl across the lot, like a man preparing to rerun a failed experiment.</div>
+    <a class="choice" href="#ampm">CHASE THE PARTY RUMOR</a>
+    <a class="choice" href="#plan">ADMIT YOU NEED A PLAN</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="plan" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>The Plan</h2>
+    <div class="story">A minor miracle occurs.
+
+Even more miraculously, Bill has not yet wandered toward a girl with the conversational subtlety of a folding chair.
+
+Even more miraculous: Amos is still not visibly grounded.
+
+You actually make a plan.
+
+Doug talks.
+Demete's leads.
+Paul stays close and improves the odds by just being Paul.
+Everyone else attempts, with mixed historical success, not to create new problems.
+
+P-Roy insists the toothbrush device may still become relevant.
+No one believes him.
+This only strengthens his resolve.
+
+Amos, meanwhile, is now operating under a cloud of possible grounding so dense it has become theological. At this point he is less a participant than a temporary exception granted by fate.</div>
+    <a class="choice" href="#liquor">EXECUTE THE PLAN</a>
+    <a class="choice" href="#arcade">GET ONE LAST READ FROM DEMETE'S</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="linger" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>You Linger</h2>
+    <div class="story">This is how nights get lost.
+
+Not through disaster. Through charm.
+
+Somebody starts Quarters. Within minutes it has acquired far too many rules, including a requirement that every player say, "Thank thee Mike for letting me play," as though the Constitution demanded it.
+
+Bill spots a girl in the room, squares his shoulders, and begins radiating the kind of confidence usually seen right before avoidable failure.
+
+Amos plays like a boy trying to have fun before his legal status changes.
+
+P-Roy has now made visible progress on his toothbrush engineering and seems deeply pleased with himself.
+
+Amos says, "I might already be grounded."
+
+No one can disprove this.</div>
+    <a class="choice" href="#plan">SNAP OUT OF IT</a>
+    <a class="choice" href="#fail-soft">LET THE NIGHT WIN</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="linger-arcade" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Arcade Linger</h2>
+    <div class="story">Staying longer at the arcade turns the mission into anthropology.
+
+Bill clocks another girl across the room and takes on the expression of a man who is somehow still surprised that his signature move keeps producing signature results.
+
+Amos is still here, which now feels less like a fact and more like a clerical error.
+
+Everyone passes through here eventually. Names like Kirsten Jones and Beth Eason drift through the room like spells. Bill begins to look vaguely doomed in a way that suggests a girl is nearby, or even just the concept of one.
+
+Demete's keeps winning at Defender like the machine insulted his bloodline.
+
+Rubo is still mostly about whiffle ball, but he is observing everything.
+
+That feels like future trouble.</div>
+    <a class="choice" href="#liquor">PULL IT TOGETHER</a>
+    <a class="choice" href="#fail-soft">LET THE NIGHT FRAGMENT</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="ampm" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>AM/PM Ending, Probably</h2>
+    <div class="story">Of course the party is not there.
+
+There is no party.
+
+There is just the quiet glow of the AM/PM and the realization that your group has once again confused movement with progress.
+
+People kick at gravel. Somebody blames fate. Amos may by now have dissolved fully into the concept of grounding, becoming less a friend than a cautionary tale with sneakers.
+
+This is one of those nights that is already becoming material while you are still inside it.</div>
+    <a class="choice" href="#plan">SALVAGE THE NIGHT</a>
+    <a class="choice" href="#fail-soft">CALL IT</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="liquor" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Final Level: Jack in the Box Liquor Store</h2>
+    <div class="story">The sign flickers above the lot like a cheap prophecy.
+
+This is the classic location. The clerk inside is about to become part of your group's private mythology whether he likes it or not.
+
+Doug looks ready.
+
+Bill also looks ready, but in the specific and unhelpful way he always looks right before asking a girl a question the universe has repeatedly begged him to retire.
+Demete's has everyone aligned.
+Paul is somehow increasing morale just by standing there.
+P-Roy is holding his toothbrush invention with the solemnity of a man about to change tactical history.
+Amos is, incredibly, still with the group, though no one believes this condition is stable.
+
+And somewhere out there, Halvorsen may be circling in a Mercedes, glowing softly with bronzer and concern.</div>
+    <a class="choice" href="#doug-win">LET DOUG HANDLE IT</a>
+    <a class="choice" href="#abbe">LET ABBE HANDLE IT</a>
+    <a class="choice" href="#prroy">USE P-ROY'S DEVICE</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="prroy" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>P-Roy Intervenes</h2>
+    <div class="story">P-Roy calls it an attention reallocation system.
+
+Everyone else calls it a toothbrush with delusions of grandeur.
+
+He tests it.
+
+Against all expectations, it works just well enough to create a distraction and just stupidly enough to feel like a crime against order.
+
+Doug watches the demonstration and says, "I want to be very clear that this is the dumbest useful thing I have ever seen."</div>
+    <a class="choice" href="#doug-win">RIDE THE MIRACLE</a>
+    <a class="choice" href="#fail-hard">DECIDE THIS HAS GONE TOO FAR</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="abbe" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Abbe Mode</h2>
+    <div class="story">Choosing Abbe is not a tactic.
+
+It is a philosophical statement that order has had its chance.
+
+This is a man whose energy strongly suggests that roofs are suggestions and other people's property is a conversation. Whatever happens next will definitely be tellable.
+
+The only question is whether it will also be useful.</div>
+    <a class="choice" href="#abbe-win">COMMIT TO CHAOS</a>
+    <a class="choice" href="#fail-hard">PULL BACK TOO LATE</a>
+    <a class="btn" href="#top">BACK TO TITLE</a>
+  </div>
+</div>
+
+<div id="doug-win" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Success</h2>
+    <div class="story">Doug does what Doug does.
+
+He gets the clerk smiling just enough to forget what kind of story this is.
+
+Demete's keeps the group from splintering into side quests.
+Paul improves the odds by being calm, strange, and weirdly reassuring.
+P-Roy, against reason, has somehow contributed.
+
+You have the keg.
+
+Somewhere else in the house, Bill is almost certainly striking out with a girl in exactly the way everyone predicted, which somehow only makes the room feel more complete.
+
+And with that, the whole night opens.
+
+Paul's house will fill.
+Quarters will start.
+Rules will multiply.
+Amos, if still technically free, will participate until grounding reasserts its natural authority, which everyone agrees is not a matter of if but when.
+
+Most importantly, the lesson sticks.
+
+Plaster Card is no longer an idea.
+
+It is policy.
+
+THE NIGHT IS YOURS.</div>
+    <a class="choice" href="#top">PLAY AGAIN</a>
+  </div>
+</div>
+
+<div id="abbe-win" class="wrap" style="margin-top:18px;">
+  <div class="panel">
+    <h2>Unexplainable Success</h2>
+    <div class="story">No one will ever be able to explain the exact mechanics of what just happened.
+
+Abbe moves through the scene like a man who has never met a boundary he regarded as final. Somehow, in a way that feels clerically improper, the world bends.
+
+The keg becomes real.
+
+It is not the right way to win.
+
+But it absolutely counts.</div>
+    <a class="choice" href="#top">PLAY AGAIN</a>
+  </div>
+</div>
+
+<div id="fail-soft" class="wrap" style="margin-top:18px; margin-bottom:24px;">
+  <div class="panel">
+    <h2>Soft Fail</h2>
+    <div class="story">You do not get the keg.
+
+But failure with this group is rarely empty.
+
+It just means the main quest got swallowed by side quests: mopeds, girls, bad intel, Quarters, unnecessary invention, and the slow creeping realization that Amos was almost certainly grounded the entire time and somehow came anyway.
+
+By Monday, no one will tell this as failure.
+
+They will tell it as material.</div>
+    <a class="choice" href="#top">TRY AGAIN</a>
+  </div>
+</div>
+
+<div id="fail-hard" class="wrap" style="margin-top:18px; margin-bottom:24px;">
+  <div class="panel">
+    <h2>Hard Fail</h2>
+    <div class="story">The structure collapses.
+
+Somebody pushed too far.
+Chaos got too close to the center.
+The night decided to teach the lesson before giving the reward.
+
+No keg. Not tonight.
+
+Still, the case for Plaster Card has never been stronger.</div>
+    <a class="choice" href="#top">TRY AGAIN</a>
+  </div>
+</div>
+
+</body>
+</html>
