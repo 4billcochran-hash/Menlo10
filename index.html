@@ -1,753 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Class of '84 — V2</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menlo Adventure</title>
 <style>
-  :root{
-    --navy:#071735;
-    --navy2:#0d2550;
-    --navy3:#173a78;
-    --yellow:#ffd84d;
-    --yellow2:#fff0a6;
-    --sky:#8fd3ff;
-    --pink:#ff5ccf;
-    --pink2:#ff9be2;
-    --green:#8dff9b;
-    --danger:#ff7a7a;
+  body {
+    margin: 0;
+    font-family: 'Courier New', monospace;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+    color: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:"Courier New",monospace;
-    color:var(--yellow2);
-    background:
-      radial-gradient(circle at 50% -10%, rgba(255,216,77,.18), transparent 25%),
-      radial-gradient(circle at 15% 20%, rgba(255,92,207,.10), transparent 28%),
-      radial-gradient(circle at 85% 20%, rgba(143,211,255,.08), transparent 24%),
-      linear-gradient(180deg, #020611 0%, #081733 45%, #020611 100%);
-    line-height:1.6;
-    overflow-x:hidden;
+
+  #game {
+    width: 600px;
+    max-width: 90%;
+    background: rgba(15, 23, 42, 0.9);
+    border: 2px solid #38bdf8;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(56,189,248,0.5);
   }
-  body::before{
-    content:"";
-    position:fixed; inset:0;
-    background:repeating-linear-gradient(
-      to bottom,
-      rgba(255,255,255,.04) 0px,
-      rgba(255,255,255,.04) 1px,
-      transparent 1px,
-      transparent 4px
-    );
-    pointer-events:none;
-    mix-blend-mode:screen;
-    opacity:.45;
-    z-index:100;
+
+  h1 {
+    text-align: center;
+    color: #38bdf8;
   }
-  .sun-grid{
-    position:fixed;
-    left:50%; transform:translateX(-50%);
-    top:54px; width:min(760px, 95vw); height:230px;
-    pointer-events:none; opacity:.28; z-index:0;
+
+  #story {
+    min-height: 120px;
+    margin-bottom: 20px;
+    line-height: 1.5;
   }
-  .sun{
-    width:180px; height:180px; margin:0 auto; border-radius:50%;
-    background:repeating-linear-gradient(
-      to bottom,
-      rgba(255,216,77,.96) 0px,
-      rgba(255,216,77,.96) 12px,
-      rgba(255,92,207,.96) 12px,
-      rgba(255,92,207,.96) 16px
-    );
-    box-shadow:0 0 40px rgba(255,92,207,.35), 0 0 80px rgba(255,216,77,.25);
+
+  .choice {
+    display: block;
+    margin: 8px 0;
+    padding: 10px;
+    background: #0ea5e9;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    font-size: 16px;
+    transition: all 0.2s;
   }
-  .grid{
-    position:absolute; left:0; right:0; bottom:-10px; height:128px;
-    background:
-      linear-gradient(to top, rgba(255,92,207,.35), transparent 72%),
-      repeating-linear-gradient(to right, rgba(143,211,255,.34) 0 2px, transparent 2px 52px),
-      repeating-linear-gradient(to top, rgba(143,211,255,.30) 0 2px, transparent 2px 24px);
-    clip-path:polygon(0 100%,100% 100%,72% 0,28% 0);
-    opacity:.82;
+
+  .choice:hover {
+    background: #0284c7;
+    transform: scale(1.05);
   }
-  .wrap{
-    position:relative; z-index:1;
-    max-width:1220px; margin:0 auto;
-    display:grid; grid-template-columns:minmax(0, 2.2fr) minmax(280px, 1fr);
-    gap:18px; padding:18px;
-  }
-  .panel{
-    background:linear-gradient(180deg, rgba(13,36,80,.96), rgba(6,20,47,.96));
-    border:3px solid var(--yellow);
-    border-radius:14px;
-    padding:20px;
-    box-shadow:0 0 0 1px rgba(255,255,255,.03) inset, 0 0 18px rgba(255,216,77,.35), inset 0 0 22px rgba(143,211,255,.08);
-    position:relative;
-  }
-  .panel::after{
-    content:"";
-    position:absolute; inset:8px;
-    border:1px solid rgba(143,211,255,.18);
-    border-radius:8px;
-    pointer-events:none;
-  }
-  .title{
-    margin:0 0 8px 0;
-    color:var(--yellow);
-    font-size:3rem;
-    letter-spacing:5px;
-    text-shadow:0 0 8px rgba(255,216,77,.8), 0 0 20px rgba(255,216,77,.45), 0 0 34px rgba(255,92,207,.15);
-  }
-  .subtitle{
-    color:var(--sky);
-    margin:0 0 18px 0;
-    letter-spacing:3px;
-    font-size:.98rem;
-    text-transform:uppercase;
-  }
-  h2,h3{
-    margin:0 0 10px 0;
-    color:var(--sky);
-    letter-spacing:2px;
-    text-transform:uppercase;
-  }
-  .event{
-    display:none;
-    margin:0 0 16px 0;
-    padding:12px;
-    border:1px solid rgba(255,92,207,.45);
-    border-radius:10px;
-    background:rgba(255,92,207,.10);
-    color:var(--pink2);
-    white-space:pre-line;
-  }
-  .story{
-    min-height:360px;
-    white-space:pre-line;
-    font-size:1.02rem;
-  }
-  .choices{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:16px;
-  }
-  .btn{
-    display:block;
-    width:100%;
-    padding:13px 14px;
-    background:linear-gradient(180deg, #1b3d83 0%, #142d63 100%);
-    color:var(--yellow);
-    border:2px solid var(--yellow);
-    border-radius:10px;
-    text-decoration:none;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    box-shadow:0 0 10px rgba(255,216,77,.18), inset 0 0 10px rgba(255,255,255,.03);
-    cursor:pointer;
-    font-family:inherit;
-    text-align:left;
-    font-size:.93rem;
-  }
-  .btn:hover{
-    background:linear-gradient(180deg, #2854a8 0%, #1b3d83 100%);
-    color:white;
-  }
-  .btn.full{grid-column:1/-1}
-  .hud{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:10px;
-  }
-  .box{
-    border:1px solid rgba(255,216,77,.28);
-    padding:8px 10px;
-    border-radius:8px;
-    background:rgba(255,255,255,.02);
-    font-size:.9rem;
-  }
-  .bar{
-    height:10px;
-    border-radius:999px;
-    background:rgba(255,255,255,.08);
-    overflow:hidden;
-    margin-top:6px;
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .fill{
-    height:100%;
-    background:linear-gradient(90deg, var(--sky), var(--yellow));
-    width:0%;
-  }
-  .tags{
-    display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;
-  }
-  .tag{
-    padding:5px 10px;
-    border-radius:999px;
-    border:1px solid rgba(255,216,77,.35);
-    color:var(--yellow);
-    background:rgba(255,255,255,.03);
-    font-size:.82rem;
-  }
-  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-  .chip{
-    padding:7px 10px;
-    border:1px solid rgba(255,216,77,.32);
-    border-radius:999px;
-    color:var(--yellow);
-    background:rgba(255,255,255,.03);
-    font-size:.85rem;
-  }
-  .small{
-    color:var(--sky);
-    font-size:.92rem;
-    line-height:1.5;
-    margin-top:14px;
-    padding-top:12px;
-    border-top:1px solid rgba(255,216,77,.35);
-  }
-  .save-note{
-    color:var(--green);
-    font-size:.84rem;
-    min-height:1.2em;
-    margin-top:8px;
-  }
-  .insert{
-    color:var(--pink2);
-    font-size:1.05rem;
-    letter-spacing:4px;
-    margin:14px 0 0 0;
-    animation: blink 1s steps(2, start) infinite;
-    text-transform:uppercase;
-  }
-  @keyframes blink {50%{opacity:0}}
-  @media (max-width:980px){
-    .wrap{grid-template-columns:1fr}
-    .choices{grid-template-columns:1fr}
-    .title{font-size:2.2rem}
+
+  #footer {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.6;
   }
 </style>
 </head>
+
 <body>
-<div class="sun-grid"><div class="sun"></div><div class="grid"></div></div>
 
-<div class="wrap">
-  <div class="panel">
-    <h1 class="title">CLASS OF '84</h1>
-    <div class="subtitle">Menlo Knights / Atherton / Party RPG V2</div>
-    <div class="chips">
-      <div class="chip" id="amosChip">AMOS STATUS: PROBABLY GROUNDED</div>
-      <div class="chip" id="billChip">BILL ROMANCE ODDS: HISTORICALLY POOR</div>
-      <div class="chip" id="prroyChip">P-ROY DEVICE THREAT: RISING</div>
-    </div>
-    <div class="event" id="eventBox"></div>
-    <div class="story" id="story"></div>
-    <div class="choices" id="choices"></div>
-  </div>
-
-  <div class="panel">
-    <h2>Player Status</h2>
-    <div class="hud">
-      <div class="box">HEAT: <span id="heatText">0</span><div class="bar"><div class="fill" id="heatBar"></div></div></div>
-      <div class="box">CRED: <span id="credText">0</span><div class="bar"><div class="fill" id="credBar"></div></div></div>
-      <div class="box">FOCUS: <span id="focusText">0</span><div class="bar"><div class="fill" id="focusBar"></div></div></div>
-      <div class="box">TIME: <span id="timeText">0</span><div class="bar"><div class="fill" id="timeBar"></div></div></div>
-      <div class="box">PLAN: <span id="planText">0</span><div class="bar"><div class="fill" id="planBar"></div></div></div>
-      <div class="box">KEG: <span id="kegText">NO</span><div class="bar"><div class="fill" id="kegBar"></div></div></div>
-    </div>
-
-    <div class="tags" id="tags"></div>
-
-    <div class="choices" style="margin-top:14px">
-      <button class="btn" id="saveBtn">Save</button>
-      <button class="btn" id="loadBtn">Load</button>
-      <button class="btn full" id="restartBtn">Restart</button>
-    </div>
-    <div class="save-note" id="saveNote"></div>
-
-    <div class="small">
-      SCHOOL COLORS: YELLOW + NAVY.<br>
-      DEMETE'S DOMINATES DEFENDER.<br>
-      HALVORSEN DRIVES A FANCY MERCEDES AND WEARS BRONZER.<br>
-      PAUL IMPROVES MORALE BY JUST BEING PAUL.<br>
-      P-ROY CAN TURN A TOOTHBRUSH INTO A PROBLEM.<br>
-      RUBO IS MOSTLY ABOUT WHIFFLE BALL FOR NOW, BUT THE TROUBLE SUBTEXT IS THERE.
-    </div>
-  </div>
+<div id="game">
+  <h1>🧠 Menlo Adventure</h1>
+  <div id="story"></div>
+  <div id="choices"></div>
+  <div id="footer">Choose wisely. Or don’t. That’s kind of the point.</div>
 </div>
 
 <script>
-(() => {
-  const $ = id => document.getElementById(id);
-  const saveKey = "class84_v2_save";
+const storyEl = document.getElementById("story");
+const choicesEl = document.getElementById("choices");
 
-  function initialState() {
-    return {
-      scene: "title",
-      heat: 2,
-      cred: 4,
-      focus: 6,
-      time: 1,
-      plan: 0,
-      keg: false,
-      amos: 2,
-      bill: 2,
-      prroy: 1,
-      tags: ["No keg yet", "Amos probably grounded"],
-      event: ""
-    };
+const game = {
+  start: {
+    text: "You wake up in Menlo Park. Your phone buzzes. Something big is about to happen.",
+    choices: [
+      { text: "Check your phone", next: "phone" },
+      { text: "Ignore it and walk outside", next: "outside" }
+    ]
+  },
+
+  phone: {
+    text: "It’s a mysterious message: 'You’ve been selected.' No explanation.",
+    choices: [
+      { text: "Reply: Who is this?", next: "reply" },
+      { text: "Delete it", next: "delete" }
+    ]
+  },
+
+  outside: {
+    text: "The air feels different. A black car rolls up slowly beside you.",
+    choices: [
+      { text: "Get in the car", next: "car" },
+      { text: "Run", next: "run" }
+    ]
+  },
+
+  reply: {
+    text: "Three dots appear... then disappear. Your phone dies instantly.",
+    choices: [
+      { text: "Panic", next: "panic" },
+      { text: "Stay calm", next: "calm" }
+    ]
+  },
+
+  delete: {
+    text: "You delete it. Nothing happens. But you can’t shake the feeling you missed something big.",
+    choices: [
+      { text: "Restart your day", next: "start" }
+    ]
+  },
+
+  car: {
+    text: "Inside, a voice says: 'Good. You chose curiosity.'",
+    choices: [
+      { text: "Continue", next: "end_good" }
+    ]
+  },
+
+  run: {
+    text: "You run… but trip. The world glitches. This wasn’t real.",
+    choices: [
+      { text: "Try again", next: "start" }
+    ]
+  },
+
+  panic: {
+    text: "Bad move. Systems don’t like panic.",
+    choices: [
+      { text: "Restart", next: "start" }
+    ]
+  },
+
+  calm: {
+    text: "Smart. A new message appears: 'We’re watching.'",
+    choices: [
+      { text: "Continue", next: "end_mystery" }
+    ]
+  },
+
+  end_good: {
+    text: "You’ve entered something bigger than you understand. But you’re in.",
+    choices: [
+      { text: "Play again", next: "start" }
+    ]
+  },
+
+  end_mystery: {
+    text: "This is just the beginning.",
+    choices: [
+      { text: "Play again", next: "start" }
+    ]
   }
+};
 
-  let state = initialState();
+function renderScene(sceneKey) {
+  const scene = game[sceneKey];
+  storyEl.innerText = scene.text;
+  choicesEl.innerHTML = "";
 
-  function clamp(v){ return Math.max(0, Math.min(10, v)); }
-  function addTag(tag){ if (!state.tags.includes(tag)) state.tags.push(tag); }
-  function setEvent(t){ state.event = t || ""; }
+  scene.choices.forEach(choice => {
+    const btn = document.createElement("button");
+    btn.className = "choice";
+    btn.innerText = choice.text;
+    btn.onclick = () => renderScene(choice.next);
+    choicesEl.appendChild(btn);
+  });
+}
 
-  function updateChips() {
-    const amosLabel = [
-      "AMOS STATUS: POSSIBLY FINE",
-      "AMOS STATUS: LOW RISK",
-      "AMOS STATUS: PROBABLY GROUNDED",
-      "AMOS STATUS: ALMOST CERTAINLY GROUNDED",
-      "AMOS STATUS: SOMEHOW STILL WITH US",
-      "AMOS STATUS: SPIRITUALLY GROUNDED"
-    ][Math.min(5, Math.floor(state.amos / 2) + 1)];
-    $("amosChip").textContent = amosLabel;
-
-    const billLabel = [
-      "BILL ROMANCE ODDS: OPTIMISTIC",
-      "BILL ROMANCE ODDS: THIN",
-      "BILL ROMANCE ODDS: HISTORICALLY POOR",
-      "BILL ROMANCE ODDS: SCRIPT UNCHANGED",
-      "BILL ROMANCE ODDS: REPEATING FAILURE",
-      "BILL ROMANCE ODDS: COSMICALLY LIMITED"
-    ][Math.min(5, Math.floor(state.bill / 2) + 1)];
-    $("billChip").textContent = billLabel;
-
-    const pLabel = [
-      "P-ROY DEVICE THREAT: LOW",
-      "P-ROY DEVICE THREAT: FORMING",
-      "P-ROY DEVICE THREAT: RISING",
-      "P-ROY DEVICE THREAT: ACTIVE",
-      "P-ROY DEVICE THREAT: TACTICAL",
-      "P-ROY DEVICE THREAT: INADVISABLE"
-    ][Math.min(5, Math.floor(state.prroy / 2) + 1)];
-    $("prroyChip").textContent = pLabel;
-  }
-
-  function maybeEvent() {
-    const rolls = [
-      () => {
-        state.amos = clamp(state.amos + 1);
-        addTag("Amos situation worsening");
-        return "A fresh theory emerges that Amos is already grounded and simply operating on borrowed freedom. No one can disprove this, which in your group counts as near certainty.";
-      },
-      () => {
-        state.bill = clamp(state.bill + 1);
-        state.focus = clamp(state.focus - 1);
-        addTag("Bill distracted");
-        return "Bill notices a girl and immediately enters the mental posture of a man preparing to ask a question that has never once worked.";
-      },
-      () => {
-        state.heat = clamp(state.heat + 1);
-        addTag("Halvorsen orbit");
-        return "Halvorsen glides by in his Mercedes, bronzed and watchful, like a dean-shaped warning shot from the future.";
-      },
-      () => {
-        state.prroy = clamp(state.prroy + 1);
-        addTag("P-Roy escalation");
-        return "P-Roy has quietly incorporated another household object into his system. The word system is doing irresponsible amounts of work here.";
-      },
-      () => {
-        state.time = clamp(state.time + 1);
-        state.focus = clamp(state.focus - 1);
-        addTag("AM/PM risk");
-        return "Someone swears there is already a party underway nearby. The sentence feels unreliable before it even finishes.";
-      }
-    ];
-    if (Math.random() < 0.38) return rolls[Math.floor(Math.random()*rolls.length)]();
-    return "";
-  }
-
-  function statLine() {
-    return `\n\nHEAT ${state.heat}/10  |  CRED ${state.cred}/10  |  FOCUS ${state.focus}/10  |  PLAN ${state.plan}/10`;
-  }
-
-  const scenes = {
-    title: {
-      text: () => `SPRING 1984.\n\nYOU ARE NOT THE OFFICIAL KINGS OF MENLO.\nDREW FERRANDO AND ERIK REVENO CAN HAVE THAT CASTLE.\n\nYOU AND YOUR PEOPLE OCCUPY THE FAR MORE INTERESTING TERRITORY JUST BELOW IT:\nTHE B TEAM OF COOL.\n\nWHICH IS TO SAY:\nTHE GROUP MOST LIKELY TO END UP WITH THE BETTER STORIES.\n\nMAIN QUEST:\nGET A KEG.\n\nSUBQUESTS:\nPRETEND AMOS IS NOT ALREADY GROUNDED.\nSTOP BILL FROM ASKING A GIRL IF SHE WANTS TO NECK AS THOUGH HISTORY HAS NOT ALREADY RULED ON THIS.\nSTOP P-ROY FROM TURNING HOUSEHOLD OBJECTS INTO TACTICAL SYSTEMS.\nSTAY OUT OF HALVORSEN'S BRONZED MERCEDES ORBIT.\n\nINSERT COIN / PRESS START.`,
-      choices: [
-        {label:"Start Game", next:"opening"},
-        {label:"Read Party Roster", next:"roster"},
-        {label:"Jump to Paul's House", next:"paul_house"},
-        {label:"Jump to the Arcade", next:"arcade"},
-      ]
-    },
-
-    roster: {
-      text: () => `YOUR CURRENT PARTY:\n\nPAUL — LOVABLE, STRANGE, IMPROVES MORALE BY BEING PAUL.\nDOUG — PERSUASION SPECIALIST. HUMAN FAST-TALK SPELL.\nDEMETE'S — LEADER ENERGY. DEFENDER DEMIGOD.\nAMOS — FUNNY, YOUNG, AND OPERATING UNDER A PERMANENT CLOUD OF GROUNDING.\nP-ROY — INVENTOR OF SOLUTIONS TO PROBLEMS NO ONE WAS HAVING.\nABBE — CHAOS GIVEN HUMAN FORM.\nRUBO — MOSTLY WHIFFLE BALL FOR NOW, FUTURE TROUBLE IN PREVIEW MODE.\nBILL — ATHLETIC, EARNEST, AND CONSISTENTLY UNSUCCESSFUL WITH GIRLS IN A WAY THAT HAS BECOME STRUCTURAL.\n\nTHE QUEST REMAINS: ACQUIRE KEG.`,
-      choices: [
-        {label:"Start the Night", next:"opening"},
-        {label:"Go Back", next:"title"}
-      ]
-    },
-
-    opening: {
-      text: () => `The night begins the way your nights usually begin: not with a decision, but with drift.\n\nOne car is playing the English Beat. Another is leaking Oingo Boingo through a cracked window. Atherton feels wide open and only loosely supervised. Which, in fairness, it is.\n\nThen someone asks the fatal question.\n\nDo we have a keg?\n\nYou do not.\n\nAnd just like that, the evening rearranges itself into a campaign.${statLine()}`,
-      choices: [
-        {label:"Go to Paul's House", next:"paul_house", effect:() => { state.focus = clamp(state.focus+1); addTag("At Paul's"); setEvent(maybeEvent()); }},
-        {label:"Find Demete's at the Arcade", next:"arcade", effect:() => { state.cred = clamp(state.cred+1); addTag("Arcade route"); setEvent(maybeEvent()); }},
-        {label:"Take the Mopeds into the Night", next:"mopeds", effect:() => { state.time = clamp(state.time+1); state.focus = clamp(state.focus-1); addTag("Moped route"); setEvent(maybeEvent()); }},
-        {label:"Check if Amos is Already Grounded", next:"amos_check", effect:() => { state.amos = clamp(state.amos+1); setEvent(""); }}
-      ]
-    },
-
-    amos_check: {
-      text: () => `You make the mistake of asking whether Amos is, in fact, currently grounded.\n\nThis launches a discussion with the energy of a legal hearing and the rigor of campfire smoke. Evidence includes: the look on Amos's face, the hour, his recent history, and the fact that if he is not grounded now he seems spiritually adjacent to it.\n\nAmos contributes one useful thought, then glances toward home like a man hearing the faint footsteps of consequences.${statLine()}`,
-      choices: [
-        {label:"Use Amos While Still Technically Free", next:"opening", effect:() => { state.focus = clamp(state.focus+1); state.cred = clamp(state.cred+1); addTag("Amos still with us"); setEvent("Against all precedent, Amos appears to remain temporarily available."); }},
-        {label:"Drop Amos Before the Recall Comes", next:"opening", effect:() => { state.time = clamp(state.time+1); state.heat = clamp(state.heat-1); addTag("Amos safely dropped"); setEvent("You buy the group a little calm by treating Amos like highly unstable inventory."); }},
-        {label:"Ignore the Issue Entirely", next:"opening", effect:() => { state.amos = clamp(state.amos+1); setEvent("This problem has not gone away. It has merely been allowed to ripen."); }}
-      ]
-    },
-
-    paul_house: {
-      text: () => `Paul's house has the feeling of infrastructure.\n\nHis parents are out of town again, which for your crowd now qualifies as a municipal resource. Paul is here doing what Paul does best: being lovable, slightly strange, and deeply stabilizing without appearing to do anything obvious.\n\nDoug leans against the counter and says what everybody is thinking: \"We need a system.\"\n\nThat is how Plaster Card begins to form. Not a club exactly. More like a vow made by smart dorks with bad logistics.\n\nMeanwhile P-Roy is in the corner trying to transform a toothbrush into what he insists may become a leverage device. Amos checks the front window the way other people check the weather. Bill looks one girl away from history repeating itself.${statLine()}`,
-      choices: [
-        {label:"Talk to Doug about an actual plan", next:"doug_plan", effect:() => { state.plan = clamp(state.plan+2); state.cred = clamp(state.cred+1); setEvent("Doug looks relieved that somebody has chosen civilization."); }},
-        {label:"Talk to Paul and absorb weird morale", next:"paul_talk", effect:() => { state.focus = clamp(state.focus+2); state.cred = clamp(state.cred+1); setEvent("Paul says something vaguely supportive that could also be interpreted as advice from a forest spirit."); }},
-        {label:"Inspect P-Roy's device", next:"prroy_lab", effect:() => { state.prroy = clamp(state.prroy+1); setEvent(""); }},
-        {label:"Stop Bill before he talks to a girl", next:"bill_intercept", effect:() => { state.bill = clamp(state.bill+1); setEvent(""); }},
-        {label:"Leave immediately for the liquor store", next:"liquor_store", effect:() => { state.time = clamp(state.time+1); setEvent(maybeEvent()); }},
-        {label:"Let the room turn into Quarters chaos", next:"quarters", effect:() => { state.time = clamp(state.time+1); state.focus = clamp(state.focus-1); setEvent(""); }}
-      ]
-    },
-
-    doug_plan: {
-      text: () => `Doug gets very still, which in your group is usually a sign that intelligence has entered the chat.\n\nHe breaks it down cleanly. Doug talks. Demete's keeps the room aligned. Paul improves morale. Abbe is not brought in unless the situation becomes mythological. Bill is to remain at least twenty feet from any flirtation opportunity. Amos is useful if still technically lawful.\n\nIt is, by your standards, a sophisticated operation.${statLine()}`,
-      choices: [
-        {label:"Lock the plan and go to the liquor store", next:"liquor_store", effect:() => { state.plan = clamp(state.plan+2); state.focus = clamp(state.focus+1); state.time = clamp(state.time+1); setEvent(maybeEvent()); }},
-        {label:"Take the plan to Demete's for intel tuning", next:"arcade", effect:() => { state.plan = clamp(state.plan+1); state.time = clamp(state.time+1); setEvent("A good plan is better when Demete's blesses it."); }},
-        {label:"Let P-Roy add one thing, against reason", next:"prroy_lab", effect:() => { state.prroy = clamp(state.prroy+1); state.plan = clamp(state.plan+1); setEvent("This is either adaptive creativity or a category error."); }}
-      ]
-    },
-
-    paul_talk: {
-      text: () => `Talking to Paul does not produce actionable logistics, exactly.\n\nWhat it produces is calm. He nods in a way that suggests the night may still become what it wanted to be. It is impossible to explain why this helps, only that it does.\n\nYou leave the conversation feeling slightly more centered and no more certain about any specific detail. Which, for Paul, is basically a perfect performance.${statLine()}`,
-      choices: [
-        {label:"Now talk to Doug and get specific", next:"doug_plan", effect:() => { state.focus = clamp(state.focus+1); state.plan = clamp(state.plan+1); setEvent(""); }},
-        {label:"Ride the strange confidence to the liquor store", next:"liquor_store", effect:() => { state.cred = clamp(state.cred+1); state.time = clamp(state.time+1); setEvent(maybeEvent()); }},
-        {label:"Stay and see what Quarters does to society", next:"quarters", effect:() => { state.time = clamp(state.time+1); state.focus = clamp(state.focus-1); setEvent(""); }}
-      ]
-    },
-
-    prroy_lab: {
-      text: () => `P-Roy has created what he calls an attention reallocation platform.\n\nEveryone else calls it a toothbrush with delusions of grandeur.\n\nHe walks you through the theory with total confidence and almost no relevance to conventional reality. Annoyingly, parts of it do sound clever. The problem is that all of the clever parts appear to belong to a different mission.\n\nP-Roy promises it can be used to redirect a clerk, launch a small object, or make a statement. He does not define statement.${statLine()}`,
-      choices: [
-        {label:"Bring the device. Greatness often looks stupid first", next:"liquor_store", effect:() => { state.prroy = clamp(state.prroy+2); state.cred = clamp(state.cred+1); state.time = clamp(state.time+1); addTag("Toothbrush device"); setEvent("You now possess an object that is both unnecessary and weirdly reassuring."); }},
-        {label:"Politely leave the device behind", next:"doug_plan", effect:() => { state.focus = clamp(state.focus+1); state.plan = clamp(state.plan+1); setEvent("P-Roy is wounded but not deterred. He has already started thinking about Version 2."); }},
-        {label:"Ask P-Roy to build something even dumber", next:"prroy_upgrade", effect:() => { state.prroy = clamp(state.prroy+2); state.heat = clamp(state.heat+1); setEvent(""); }}
-      ]
-    },
-
-    prroy_upgrade: {
-      text: () => `This was a tactical mistake and a comic triumph.\n\nP-Roy has now incorporated tape, a pen spring, and what appears to be a shoelace. The thing in his hand now looks less like a toothbrush and more like the prototype for a product nobody should own.\n\nDoug studies it and says, \"I want to be very clear that this is the dumbest useful thing I have ever seen.\"\n\nThe phrase dumbest useful thing hangs in the room like a blessing.${statLine()}`,
-      choices: [
-        {label:"Take the upgraded device to the liquor store", next:"liquor_store", effect:() => { state.cred = clamp(state.cred+2); state.time = clamp(state.time+1); addTag("P-Roy miracle pending"); setEvent("This may save the night. It may also become evidence."); }},
-        {label:"Enough. Go back to the real plan", next:"doug_plan", effect:() => { state.focus = clamp(state.focus+1); setEvent("Civilization claws back a little ground."); }}
-      ]
-    },
-
-    bill_intercept: {
-      text: () => `Bill has seen a girl and is entering that familiar emotional posture which says he is about to try the same move again as though the past were merely a rumor.\n\nYou can practically hear history clearing its throat.\n\nIf left unchecked, he will walk over and ask if she wants to neck or make out with the confidence of a man who has somehow confused consistency with strategy.${statLine()}`,
-      choices: [
-        {label:"Pull him back into the mission", next:"paul_house", effect:() => { state.focus = clamp(state.focus+1); state.cred = clamp(state.cred+1); setEvent("This may be the first successful Bill extraction in recorded history."); }},
-        {label:"Let him take the shot and learn nothing", next:"bill_fail", effect:() => { state.bill = clamp(state.bill+2); setEvent(""); }},
-        {label:"Redirect Bill toward helping Amos", next:"amos_check", effect:() => { state.focus = clamp(state.focus+1); setEvent("It is difficult to flirt while conducting a grounding audit."); }}
-      ]
-    },
-
-    bill_fail: {
-      text: () => `Bill walks over.\n\nHe says his line.\n\nThe exact wording varies less than he seems to think it does, but the meaning is always the same: would you like to make out?\n\nThe response arrives right on schedule. Immediate. Predictable. Somehow still disappointing.\n\nHe returns carrying the same outcome he always carries: no progress, mild damage, and the baffling suggestion that next time could be different.${statLine()}`,
-      choices: [
-        {label:"Be supportive but firm and return to the plan", next:"doug_plan", effect:() => { state.focus = clamp(state.focus-1); state.cred = clamp(state.cred-1); setEvent("Bill accepts the setback with the dignity of a man currently pretending this was merely reconnaissance."); }},
-        {label:"Let the room pretend this helped", next:"quarters", effect:() => { state.focus = clamp(state.focus-2); state.time = clamp(state.time+1); setEvent("The mission has taken emotional shrapnel."); }},
-        {label:"Put Bill in motion and change the energy", next:"mopeds", effect:() => { state.time = clamp(state.time+1); setEvent("Fresh air is now serving as crisis response."); }}
-      ]
-    },
-
-    quarters: {
-      text: () => `Quarters begins and, within minutes, ceases to be a game and becomes a legal system.\n\nRules multiply. Amendments arrive. Somebody insists that every player say, \"Thank thee Mike for letting me play,\" as though the Constitution demanded it. The room accepts this immediately.\n\nThis is how nights get lost with your crowd: not through disaster, but through charm.\n\nAmos is still somehow present. Bill is licking romantic wounds. P-Roy is sketching improvements to his device on a napkin like a man solving the wrong war.${statLine()}`,
-      choices: [
-        {label:"Snap everybody out of it", next:"doug_plan", effect:() => { state.focus = clamp(state.focus+2); state.plan = clamp(state.plan+1); setEvent("Against long odds, discipline re-enters the room."); }},
-        {label:"Use Quarters as morale and stay a little longer", next:"quarters_chaos", effect:() => { state.cred = clamp(state.cred+1); state.time = clamp(state.time+1); setEvent(""); }},
-        {label:"End the night as a soft fail", next:"soft_fail", effect:() => { setEvent(""); }}
-      ]
-    },
-
-    quarters_chaos: {
-      text: () => `The longer Quarters runs, the less anyone remembers that there was once a main quest.\n\nThe house feels full even if it isn't. The rules now have a ceremonial structure. Bill begins to recover just enough confidence to become dangerous again. Amos may be here illegally. Paul's mere existence keeps the whole thing from collapsing into pure nonsense.\n\nYou are standing on the lip of the night becoming material instead of victory.${statLine()}`,
-      choices: [
-        {label:"One last push for the keg", next:"liquor_store", effect:() => { state.time = clamp(state.time+1); state.focus = clamp(state.focus-1); setEvent(maybeEvent()); }},
-        {label:"Accept the side-quest ending", next:"soft_fail", effect:() => { setEvent(""); }}
-      ]
-    },
-
-    arcade: {
-      text: () => `The arcade is a minor kingdom and Demete's is currently its wizard king.\n\nHe is locked into Defender with the kind of focus other people reserve for surgery or revenge. He does not look up when you approach.\n\n\"Jack in the Box liquor store,\" he says. \"Classic move. Don't be idiots.\"\n\nThis is excellent advice for a group that treats not being idiots as more of a creative aspiration than a dependable setting.\n\nAt the edge of the room is Rubo, still mostly concerned with whiffle ball and angles, though there is already a faint preview in him of future instigation.${statLine()}`,
-      choices: [
-        {label:"Get tactical intel from Demete's", next:"arcade_intel", effect:() => { state.cred = clamp(state.cred+1); state.plan = clamp(state.plan+1); setEvent("Demete's treats the mission like a real mission, which helps immediately."); }},
-        {label:"Stay and watch Defender too long", next:"linger_arcade", effect:() => { state.time = clamp(state.time+1); state.focus = clamp(state.focus-1); setEvent(""); }},
-        {label:"Ask Rubo what he sees", next:"rubo_scene", effect:() => { state.cred = clamp(state.cred+1); setEvent(""); }},
-        {label:"Pull Bill away from a bad idea", next:"bill_intercept", effect:() => { setEvent(""); }}
-      ]
-    },
-
-    arcade_intel: {
-      text: () => `Demete's finally looks away from Defender long enough to refine the map.\n\nThe liquor store is still the best move. The backside route exists, but only if the room turns weird. The actual risk, he says, is not the clerk. It is your people. Too many variables. Too much drift. Too many opportunities for Bill to treat hope like evidence.\n\nThis is both brutally fair and tactically useful.${statLine()}`,
-      choices: [
-        {label:"Take the intel and go straight to the liquor store", next:"liquor_store", effect:() => { state.plan = clamp(state.plan+1); state.time = clamp(state.time+1); setEvent(maybeEvent()); }},
-        {label:"Circle back to Paul's and rally the crew", next:"paul_house", effect:() => { state.focus = clamp(state.focus+1); setEvent("Better to arrive organized than merely present."); }}
-      ]
-    },
-
-    rubo_scene: {
-      text: () => `Rubo studies the room the way other people study geometry.\n\nRight now his concerns are mostly whiffle ball, trajectories, and quiet internal systems. But even now there is a hint that one day he will discover how much fun it is to start trouble just to see what kind of truth shakes loose.\n\nTonight, though, he is mostly observational.\n\nWhich turns out to be useful. He points out three things no one else noticed, two possible exits, and one reason Bill should not be allowed near the prize counter.${statLine()}`,
-      choices: [
-        {label:"Use Rubo's observations and move", next:"liquor_store", effect:() => { state.plan = clamp(state.plan+1); state.cred = clamp(state.cred+1); addTag("Rubo read the room"); setEvent(maybeEvent()); }},
-        {label:"Stay and keep people-watching", next:"linger_arcade", effect:() => { state.time = clamp(state.time+1); setEvent("Observation is not the same as motion, but it feels smart enough to fool people."); }}
-      ]
-    },
-
-    linger_arcade: {
-      text: () => `Staying longer at the arcade turns the mission into anthropology.\n\nNames like Kirsten Jones and Beth Eason drift through the room like spells. Bill begins to look vaguely doomed in a way that suggests a girl is nearby, or even just the concept of one.\n\nDemete's keeps winning at Defender like the machine insulted his bloodline.\n\nMeanwhile, your actual mission begins to age in place.${statLine()}`,
-      choices: [
-        {label:"Pull it together now", next:"liquor_store", effect:() => { state.focus = clamp(state.focus+1); state.time = clamp(state.time+1); setEvent(maybeEvent()); }},
-        {label:"Let the night fragment into side quests", next:"soft_fail", effect:() => { setEvent(""); }}
-      ]
-    },
-
-    mopeds: {
-      text: () => `The mopeds fire up and instantly make the whole evening feel more cinematic than it probably deserves.\n\nBill and Howie together can turn even a simple errand into a side quest. Atherton opens up around you in warm strips of pavement and possibility. For a few minutes, it becomes extremely easy to believe that motion itself counts as strategy.\n\nIt does not.\n\nThis is one of the great recurring lies of your youth.${statLine()}`,
-      choices: [
-        {label:"Chase a party rumor", next:"ampm", effect:() => { state.time = clamp(state.time+1); setEvent("The rumor arrives with exactly the kind of confidence bad information always has."); }},
-        {label:"Loop back to Paul's House", next:"paul_house", effect:() => { state.focus = clamp(state.focus+1); setEvent("Admitting you need structure is humiliating and correct."); }},
-        {label:"Go straight to the liquor store on vibes", next:"liquor_store", effect:() => { state.focus = clamp(state.focus-1); state.heat = clamp(state.heat+1); setEvent(maybeEvent()); }}
-      ]
-    },
-
-    ampm: {
-      text: () => `Of course the party is not there.\n\nThere is no party.\n\nThere is just the quiet glow of the AM/PM and the realization that your group has once again confused movement with progress.\n\nPeople kick at gravel. Somebody blames fate. Amos may have dissolved fully into the concept of grounding. Bill briefly considers talking to a girl here, which proves humiliation cannot kill optimism.${statLine()}`,
-      choices: [
-        {label:"Salvage the night and make a plan", next:"doug_plan", effect:() => { state.focus = clamp(state.focus+1); state.plan = clamp(state.plan+1); setEvent("Embarrassment can be surprisingly clarifying."); }},
-        {label:"Turn this into a soft fail story", next:"soft_fail", effect:() => { setEvent(""); }},
-        {label:"Go to the liquor store anyway", next:"liquor_store", effect:() => { state.time = clamp(state.time+1); state.cred = clamp(state.cred-1); setEvent(maybeEvent()); }}
-      ]
-    },
-
-    liquor_store: {
-      text: () => `The Jack in the Box sign flickers above the lot like a cheap prophecy.\n\nThis is the classic location. The clerk inside is about to become part of your group's private mythology whether he likes it or not.\n\nDoug looks ready.\nDemete's has everyone aligned.\nPaul is somehow increasing morale just by standing there.\nP-Roy is holding his device with the solemnity of a man about to change tactical history.\n\nAnd somewhere out there, Halvorsen may be circling in a Mercedes, glowing softly with bronzer and concern.${statLine()}`,
-      choices: [
-        {label:"Let Doug handle it", next:"doug_run", effect:() => { setEvent(maybeEvent()); }},
-        {label:"Let Abbe handle it", next:"abbe_run", effect:() => { setEvent(""); }},
-        {label:"Use P-Roy's device", next:"prroy_run", effect:() => { setEvent(""); }},
-        {label:"Let Bill talk, for no defensible reason", next:"bill_liquor", effect:() => { setEvent(""); }}
-      ]
-    },
-
-    doug_run: {
-      text: () => `Doug takes the lead the way some people take a stage: calmly, cleanly, and with complete confidence that if this goes badly it will at least become excellent material.\n\nThis is what planning was for. This is what all the small decisions were buying.\n\nThe structure holds. For now.${statLine()}`,
-      choices: [
-        {label:"Finish clean and get the keg", next:"win", effect:() => { state.keg = true; state.cred = clamp(state.cred+1); addTag("Keg acquired"); setEvent("The disciplined path works. This should be written down as policy."); }},
-        {label:"Push too far and ask for more", next:"hard_fail", effect:() => { state.heat = clamp(state.heat+2); setEvent("Greed enters the chat and immediately worsens it."); }}
-      ]
-    },
-
-    prroy_run: {
-      text: () => `P-Roy calls it an attention reallocation maneuver.\n\nEveryone else calls it a toothbrush with delusions of grandeur.\n\nHe tests it. Against all expectations, it works just well enough to create a distraction and just stupidly enough to feel like a crime against order.\n\nDoug watches and says, \"I want to be very clear that this is the dumbest useful thing I have ever seen.\"${statLine()}`,
-      choices: [
-        {label:"Ride the miracle and let Doug close", next:"win", effect:() => { state.keg = true; state.cred = clamp(state.cred+2); addTag("P-Roy miracle"); setEvent("Somewhere, deep in the American home-goods ecosystem, a toothbrush has reached its highest purpose."); }},
-        {label:"Decide this has gone too far", next:"hard_fail", effect:() => { state.heat = clamp(state.heat+1); state.focus = clamp(state.focus-1); setEvent("The line between inspired and inadvisable was crossed some time ago."); }}
-      ]
-    },
-
-    abbe_run: {
-      text: () => `Choosing Abbe is not a tactic.\n\nIt is a philosophical statement that order has had its chance.\n\nThis is a man whose energy strongly suggests that roofs are suggestions and other people's property is a conversation. Whatever happens next will definitely be tellable.\n\nThe only question is whether it will also be useful.${statLine()}`,
-      choices: [
-        {label:"Commit to chaos", next:"abbe_result", effect:() => { setEvent(""); }},
-        {label:"Pull back and return to Doug", next:"doug_run", effect:() => { state.cred = clamp(state.cred+1); setEvent("Civilization makes a late push."); }}
-      ]
-    },
-
-    abbe_result: {
-      text: () => `Abbe moves through the scene like a man who has never met a boundary he regarded as final.\n\nEverybody watches with the posture of people already composing the retelling.\n\nThis is either going to work in a way nobody can explain, or fail in a way that becomes folklore.${statLine()}`,
-      choices: [
-        {label:"See what the universe allows", next:"abbe_flip", effect:() => {
-          if (Math.random() < 0.5) {
-            state.scene = "abbe_win";
-          } else {
-            state.scene = "hard_fail";
-            setEvent("Somewhere, spiritually, a Mustang has taken damage.");
-          }
-        }}
-      ]
-    },
-
-    abbe_flip: {
-      text: () => `This should not be a real screen. If you're seeing it, something weird happened.`,
-      choices: [
-        {label:"Continue", next:"abbe_win"}
-      ]
-    },
-
-    abbe_win: {
-      text: () => `No one will ever be able to explain the exact mechanics of what just happened.\n\nSomehow, in a way that feels clerically improper, the world bends.\n\nThe keg becomes real.\n\nIt is not the right way to win.\n\nBut it absolutely counts.${statLine()}`,
-      choices: [
-        {label:"Take the win and open the night", next:"win", effect:() => { state.keg = true; addTag("Abbe miracle"); setEvent("History commits a procedural error in your favor."); }}
-      ]
-    },
-
-    bill_liquor: {
-      text: () => `Against all available evidence, Bill is allowed into the conversational chain.\n\nAlmost immediately he spots a girl, reorients away from the mission, and prepares to ask his usual question as though the universe owes him a revision.\n\nIt does not.${statLine()}`,
-      choices: [
-        {label:"Pull him back before the damage lands", next:"doug_run", effect:() => { state.focus = clamp(state.focus+1); state.bill = clamp(state.bill+1); setEvent("You avoid total collapse by inches."); }},
-        {label:"Let it happen and watch the mission crater", next:"hard_fail", effect:() => { state.bill = clamp(state.bill+2); state.cred = clamp(state.cred-2); setEvent("The response is immediate, predictable, and perfectly on brand."); }}
-      ]
-    },
-
-    win: {
-      text: () => {
-        let bonus = "";
-        if (state.plan >= 4 && state.cred >= 6 && state.focus >= 5 && state.heat <= 5) {
-          bonus = `\n\nBecause you got here with just enough structure to survive your own instincts, the whole night takes on that rare perfect quality. It hints at Santa Cruz. At quesadillas. At the absurd possibility that Bill might briefly believe things are finally turning in his favor before evidence arrives.`;
-          addTag("Perfect-ish run");
-        }
-        return `You have the keg.\n\nAnd with that, the whole night opens.\n\nPaul's house will fill.\nQuarters will start.\nRules will multiply.\nAmos, if still technically free, will contribute until grounding reasserts its natural authority.\nBill will almost certainly strike out with a girl in exactly the way everybody predicted, which somehow only makes the room feel more complete.\n\nMost importantly, the lesson sticks.\n\nPlaster Card is no longer an idea.\n\nIt is policy.${bonus}${statLine()}`;
-      },
-      choices: [
-        {label:"Play Again", next:"title"},
-        {label:"Restart Everything", next:"reset"}
-      ]
-    },
-
-    soft_fail: {
-      text: () => `You do not get the keg.\n\nBut failure with this group is rarely empty.\n\nIt just means the main quest got swallowed by side quests: mopeds, girls, bad intel, Quarters, unnecessary invention, Bill asking if someone wants to neck and receiving the customary response, and the slow creeping realization that Amos may have been grounded the entire time.\n\nBy Monday, no one will tell this as failure.\n\nThey will tell it as material.${statLine()}`,
-      choices: [
-        {label:"Try Again", next:"title"},
-        {label:"Make One Last Serious Run", next:"doug_plan", effect:() => { state.focus = clamp(state.focus+1); state.plan = clamp(state.plan+1); setEvent("The night offers one last narrow door."); }}
-      ]
-    },
-
-    hard_fail: {
-      text: () => `The structure collapses.\n\nSomebody pushed too far.\nChaos got too close to the center.\nThe night decided to teach the lesson before giving the reward.\n\nNo keg. Not tonight.\n\nStill, the case for Plaster Card has never been stronger.${statLine()}`,
-      choices: [
-        {label:"Try Again", next:"title"},
-        {label:"Restart Everything", next:"reset"}
-      ]
-    },
-
-    reset: {
-      text: () => `RESETTING CAMPAIGN...`,
-      choices: [
-        {label:"Continue", next:"title", effect:() => { state = initialState(); setEvent("New run. Same people. Same risks."); }}
-      ]
-    }
-  };
-
-  function render() {
-    if (state.scene === "reset") {
-      state = initialState();
-      state.scene = "title";
-      state.event = "Fresh run loaded.";
-    }
-
-    const scene = scenes[state.scene];
-    if (!scene) {
-      state = initialState();
-      return render();
-    }
-
-    $("story").textContent = typeof scene.text === "function" ? scene.text() : scene.text;
-
-    const box = $("eventBox");
-    if (state.event) {
-      box.style.display = "block";
-      box.textContent = state.event;
-    } else {
-      box.style.display = "none";
-      box.textContent = "";
-    }
-
-    const choices = $("choices");
-    choices.innerHTML = "";
-    scene.choices.forEach((choice, idx) => {
-      const btn = document.createElement("button");
-      btn.className = "btn" + ((scene.choices.length % 2 === 1 && idx === scene.choices.length - 1) ? " full" : "");
-      btn.textContent = choice.label;
-      btn.onclick = () => {
-        if (choice.effect) choice.effect();
-        if (state.scene === "abbe_result" && choice.label === "See what the universe allows") {
-          render();
-          return;
-        }
-        state.scene = choice.next;
-        render();
-      };
-      choices.appendChild(btn);
-    });
-
-    updateHUD();
-  }
-
-  function setBar(id, value) {
-    $(id).style.width = `${clamp(value) * 10}%`;
-  }
-
-  function updateHUD() {
-    $("heatText").textContent = state.heat;
-    $("credText").textContent = state.cred;
-    $("focusText").textContent = state.focus;
-    $("timeText").textContent = state.time;
-    $("planText").textContent = state.plan;
-    $("kegText").textContent = state.keg ? "YES" : "NO";
-
-    setBar("heatBar", state.heat);
-    setBar("credBar", state.cred);
-    setBar("focusBar", state.focus);
-    setBar("timeBar", state.time);
-    setBar("planBar", state.plan);
-    setBar("kegBar", state.keg ? 10 : 0);
-
-    $("tags").innerHTML = state.tags.slice(0,10).map(t => `<span class="tag">${t}</span>`).join("");
-    updateChips();
-  }
-
-  $("saveBtn").onclick = () => {
-    localStorage.setItem(saveKey, JSON.stringify(state));
-    $("saveNote").textContent = "Game saved.";
-  };
-  $("loadBtn").onclick = () => {
-    const raw = localStorage.getItem(saveKey);
-    if (!raw) {
-      $("saveNote").textContent = "No saved game found.";
-      return;
-    }
-    state = JSON.parse(raw);
-    $("saveNote").textContent = "Saved game loaded.";
-    render();
-  };
-  $("restartBtn").onclick = () => {
-    state = initialState();
-    state.event = "Fresh run loaded.";
-    render();
-  };
-
-  render();
-})();
+renderScene("start");
 </script>
+
 </body>
 </html>
